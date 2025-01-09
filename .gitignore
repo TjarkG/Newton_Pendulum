@@ -1,0 +1,33 @@
+# Kicad Outputs
+*/Gerber
+*.zip
+*.hex
+*.lss
+*.eep
+*.o
+*.d
+*.elf
+*.map
+*.mk
+*.srec
+*/#auto_saved_files#
+*.lck
+_autosave-**
+*-backups
+fp-info-cache
+
+# libreoffice lock files
+.~lock**
+
+# PlatformIO
+*/include/README
+*/lib/README
+*/test/README
+.pio
+sdk
+
+workspace.xml
+.idea
+
+secrets.hpp
+**/*.*.hpp
