@@ -1,16 +1,46 @@
+//
+// Created by Joel Neumann on 02.01.24.
+//
+
+
+#include "Button/ButtonTask.h"
+#include "Communication/CommunicationTask.h"
+#include "Configuration/Configurations.h"
+#include "Motor/MotorTask.h"
+#include "SideTouch/SideTouchTask.h"
 #include <Arduino.h>
 
-int LED_BUILTIN = 2;
 
-void setup()
-{
-	pinMode(LED_BUILTIN, OUTPUT);
+#define PRESCALER 3
+
+void setup() {
+    Serial.begin(115200);
+
+    Configurations configurations;
+
+    MotorTask motor_task = MotorTask(1, configurations);
+
+    ButtonTask button_task = ButtonTask(0, configurations.sender_config);
+    SideTouchTask side_touch_task = SideTouchTask(0, configurations.sender_config, PRESCALER, motor_task.getUpdateTouchCountCallback());
+
+    CommunicationTask communication_task = CommunicationTask(
+            0,
+            button_task.getHandles(),
+            side_touch_task.getHandles(),
+            configurations,
+            motor_task.getUpdateAngleDeltaCallback(),
+            button_task.getDataCallback(),
+            side_touch_task.getDataCallback(),
+            motor_task.getDataCallback(),
+            motor_task.getSetTargetCallback(),
+            motor_task.getPerformMotorActionCallback(),
+            motor_task.getUpdateMotorConfigCallback()
+            );
+
+
+    //Delete loop task
+    vTaskDelete(nullptr);
 }
 
-void loop()
-{
-	digitalWrite(LED_BUILTIN, HIGH);
-	delay(1000);
-	digitalWrite(LED_BUILTIN, LOW);
-	delay(1000);
-}
+
+void loop() {}
