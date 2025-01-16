@@ -127,34 +127,24 @@ void MotorTask::updateSnapPointWithBorder(const float target, const int snaps, c
 
 		handleQueue();
 
-		if (configurations_.multi_knob_state.getState() == MultiKnobState::State::ON)
+		if (!motor_active_)
 		{
-			if (!motor_active_)
-			{
-				motor_active_ = true;
-				motor_->enable();
-			}
+			motor_active_ = true;
+			motor_->enable();
+		}
 
-			TouchConfig current_config = configurations_.motor_config.getTouchConfig(touch_count_);
-			switch (current_config.mode)
-			{
-				case CONFIGURATION_HIT_TARGET:
-					runHitTargetMode(current_config);
-					break;
-				case CONFIGURATION_SNAPS_OPEN:
-					runSnapsOpenMode(current_config);
-					break;
-				case CONFIGURATION_SNAPS_WITH_BORDER:
-					runSnapsWithBorderMode(current_config);
-					break;
-			}
-		} else
+		TouchConfig current_config = configurations_.motor_config.getTouchConfig(touch_count_);
+		switch (current_config.mode)
 		{
-			if (motor_active_)
-			{
-				motor_active_ = false;
-				motor_->disable();
-			}
+			case CONFIGURATION_HIT_TARGET:
+				runHitTargetMode(current_config);
+				break;
+			case CONFIGURATION_SNAPS_OPEN:
+				runSnapsOpenMode(current_config);
+				break;
+			case CONFIGURATION_SNAPS_WITH_BORDER:
+				runSnapsWithBorderMode(current_config);
+				break;
 		}
 	}
 }

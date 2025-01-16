@@ -6,13 +6,9 @@
 #define DREA_V2_CONFIGURATIONS_H
 
 #include "MotorConfig.h"
-#include "MultiKnobState.h"
-#include "SenderConfig.h"
 
 struct Configurations
 {
-	MultiKnobState multi_knob_state;
-	SenderConfig sender_config = SenderConfig::getStandardConfig();
 	MotorConfig motor_config;
 };
 

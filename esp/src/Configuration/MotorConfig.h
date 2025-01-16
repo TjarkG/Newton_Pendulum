@@ -6,6 +6,8 @@
 #define DREA_V2_MOTOR_CONFIG_H
 
 #include "Communication/Protocol/Protocol.h"
+#include <array>
+#include <cstdint>
 
 struct TouchConfig
 {
@@ -32,7 +34,7 @@ public:
 
 	void setAllTouchConfigs(TouchConfig config);
 
-	TouchConfig getTouchConfig(size_t index) const;
+	[[nodiscard]] TouchConfig getTouchConfig(size_t index) const;
 
 private:
 	std::array<TouchConfig, 7> touch_configs_{};
