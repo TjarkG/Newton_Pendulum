@@ -9,10 +9,11 @@
 #include "MultiKnobState.h"
 #include "SenderConfig.h"
 
-struct Configurations {
-    MultiKnobState multi_knob_state;
-    SenderConfig sender_config = SenderConfig::getStandardConfig();
-    MotorConfig motor_config;
+struct Configurations
+{
+	MultiKnobState multi_knob_state;
+	SenderConfig sender_config = SenderConfig::getStandardConfig();
+	MotorConfig motor_config;
 };
 
 #endif//DREA_V2_CONFIGURATIONS_H

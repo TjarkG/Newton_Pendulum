@@ -4,10 +4,12 @@
 
 #include "MultiKnobState.h"
 
-MultiKnobState::State MultiKnobState::getState() const {
-    return state_;
+MultiKnobState::State MultiKnobState::getState() const
+{
+	return state_;
 }
 
-void MultiKnobState::setState(MultiKnobState::State state) {
-    state_ = state;
+void MultiKnobState::setState(MultiKnobState::State state)
+{
+	state_ = state;
 }

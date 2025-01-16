@@ -13,33 +13,35 @@
 
 #define PRESCALER 3
 
-void setup() {
-    Serial.begin(115200);
+void setup()
+{
+	Serial.begin(115200);
 
-    Configurations configurations;
+	Configurations configurations;
 
-    MotorTask motor_task = MotorTask(1, configurations);
+	auto motor_task = MotorTask(1, configurations);
 
-    ButtonTask button_task = ButtonTask(0, configurations.sender_config);
-    SideTouchTask side_touch_task = SideTouchTask(0, configurations.sender_config, PRESCALER, motor_task.getUpdateTouchCountCallback());
+	auto button_task = ButtonTask(0, configurations.sender_config);
+	auto side_touch_task = SideTouchTask(0, configurations.sender_config, PRESCALER,
+	                                              motor_task.getUpdateTouchCountCallback());
 
-    CommunicationTask communication_task = CommunicationTask(
-            0,
-            button_task.getHandles(),
-            side_touch_task.getHandles(),
-            configurations,
-            motor_task.getUpdateAngleDeltaCallback(),
-            button_task.getDataCallback(),
-            side_touch_task.getDataCallback(),
-            motor_task.getDataCallback(),
-            motor_task.getSetTargetCallback(),
-            motor_task.getPerformMotorActionCallback(),
-            motor_task.getUpdateMotorConfigCallback()
-            );
+	auto communication_task = CommunicationTask(
+		0,
+		button_task.getHandles(),
+		side_touch_task.getHandles(),
+		configurations,
+		motor_task.getUpdateAngleDeltaCallback(),
+		button_task.getDataCallback(),
+		side_touch_task.getDataCallback(),
+		motor_task.getDataCallback(),
+		motor_task.getSetTargetCallback(),
+		motor_task.getPerformMotorActionCallback(),
+		motor_task.getUpdateMotorConfigCallback()
+	);
 
 
-    //Delete loop task
-    vTaskDelete(nullptr);
+	//Delete loop task
+	vTaskDelete(nullptr);
 }
 
 

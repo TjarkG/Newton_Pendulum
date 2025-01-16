@@ -7,29 +7,35 @@
 
 #include "Communication/Protocol/Protocol.h"
 
-struct TouchConfig {
-    uint8_t strength;
-    MotorConfiguration mode;
-    int snaps;
-    float lower_border;
-    float upper_border;
+struct TouchConfig
+{
+	uint8_t strength;
+	MotorConfiguration mode;
+	int snaps;
+	float lower_border;
+	float upper_border;
 };
 
-struct TouchConfigUpdate{
-    TouchCount count;
-    TouchConfig config;
+struct TouchConfigUpdate
+{
+	TouchCount count;
+	TouchConfig config;
 };
 
 
-class MotorConfig {
+class MotorConfig
+{
 public:
-    MotorConfig();
-    void setTouchConfig(size_t index, TouchConfig config);
-    void setAllTouchConfigs(TouchConfig config);
-    TouchConfig getTouchConfig(size_t index) const;
+	MotorConfig();
+
+	void setTouchConfig(size_t index, TouchConfig config);
+
+	void setAllTouchConfigs(TouchConfig config);
+
+	TouchConfig getTouchConfig(size_t index) const;
 
 private:
-    std::array<TouchConfig, 7> touch_configs_{};
+	std::array<TouchConfig, 7> touch_configs_{};
 };
 
 #endif//DREA_V2_MOTOR_CONFIG_H

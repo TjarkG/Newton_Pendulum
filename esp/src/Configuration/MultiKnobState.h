@@ -6,18 +6,21 @@
 #define DREA_V2_MULTI_KNOB_STATE_H
 
 
-class MultiKnobState {
+class MultiKnobState
+{
 public:
-    enum State {
-        OFF,
-        ON
-    };
+	enum State
+	{
+		OFF,
+		ON
+	};
 
-    State getState() const;
-    void setState(State state);
+	State getState() const;
+
+	void setState(State state);
 
 private:
-    State state_ = ON;
+	State state_ = ON;
 };
 
 #endif//DREA_V2_MULTI_KNOB_STATE_H
