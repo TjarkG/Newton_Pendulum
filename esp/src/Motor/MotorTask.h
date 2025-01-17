@@ -12,7 +12,7 @@
 ///This can be adjusted to change the strength base for the MultiKnob. The bigger the number the stronger the strength.
 #define STRENGTH_MULTIPLIER 0.3f
 
-#include "Configuration/Configurations.h"
+#include "Configuration/MotorConfig.h"
 #include "MultiKnobData.h"
 #include "SimpleFOC.h"
 #include "task.h"
@@ -43,7 +43,7 @@ class MotorTask final : public Task<MotorTask>
 	};
 
 
-	Configurations &configurations_;
+	MotorConfig &motor_config;
 	bool motor_active_ = true;
 
 	MagneticSensorSPI sensor_ = MagneticSensorSPI(AS5048_SPI, SENSOR_PIN);
@@ -99,13 +99,15 @@ protected:
 	[[noreturn]] void run();
 
 public:
-	MotorTask(int task_core, Configurations &configurations);
+	MotorTask(int task_core, MotorConfig &configurations);
 
 	[[nodiscard]] std::function<MotorData()> getDataCallback() const;
 
 	std::function<void()> getUpdateAngleDeltaCallback();
 
 	[[nodiscard]] std::function<void(float)> getSetTargetCallback() const;
+
+	void setTarget(float target) const;
 
 	[[nodiscard]] std::function<void(MotorAction)> getPerformMotorActionCallback() const;
 

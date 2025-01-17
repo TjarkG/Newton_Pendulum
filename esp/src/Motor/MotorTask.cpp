@@ -6,8 +6,8 @@
 
 #include <Preferences.h>
 
-MotorTask::MotorTask(int task_core, Configurations &configs)
-	: Task("Motor", 10000, 1, task_core), configurations_(configs)
+MotorTask::MotorTask(int task_core, MotorConfig &configurations)
+	: Task("Motor", 10000, 1, task_core), motor_config(configurations)
 {
 	motor_command_queue_ = xQueueCreate(10, sizeof(MotorCommand));
 	beginTask();
@@ -22,9 +22,9 @@ void MotorTask::setup()
 	motor_->linkDriver(&driver_);
 	motor_->linkSensor(&sensor_);
 
-	motor_->foc_modulation = FOCModulationType::SpaceVectorPWM;
+	motor_->foc_modulation = SpaceVectorPWM;
 	//Angle and velocity control works not that good
-	motor_->controller = MotionControlType::torque;
+	motor_->controller = torque;
 	motor_->voltage_limit = 5;
 
 	//Voltage for the calibration
@@ -45,7 +45,7 @@ void MotorTask::setup()
 	if (flash_storage.isKey(namespace_zero_electric_angle))
 	{
 		motor_->zero_electric_angle = flash_storage.getFloat(namespace_zero_electric_angle);
-		motor_->sensor_direction = Direction::CCW;
+		motor_->sensor_direction = CCW;
 	}
 	motor_->initFOC();
 	if (!flash_storage.isKey(namespace_zero_electric_angle))
@@ -112,7 +112,8 @@ void MotorTask::updateSnapPointOpen(const float target, const int snaps)
 void MotorTask::updateSnapPointWithBorder(const float target, const int snaps, const float lower_border,
                                           const float upper_border)
 {
-	motor_data_.current_snap_point = static_cast<int>(round(target / (upper_border - lower_border) / static_cast<float>(snaps - 1)));
+	motor_data_.current_snap_point = static_cast<int>(round(
+		target / (upper_border - lower_border) / static_cast<float>(snaps - 1)));
 }
 
 
@@ -133,7 +134,7 @@ void MotorTask::updateSnapPointWithBorder(const float target, const int snaps, c
 			motor_->enable();
 		}
 
-		TouchConfig current_config = configurations_.motor_config.getTouchConfig(touch_count_);
+		TouchConfig current_config = motor_config.getTouchConfig(touch_count_);
 		switch (current_config.mode)
 		{
 			case CONFIGURATION_HIT_TARGET:
@@ -242,12 +243,9 @@ std::function<void(TouchConfigUpdate &)> MotorTask::getUpdateMotorConfigCallback
 void MotorTask::updateConfig(const TouchConfigUpdate &new_config) const
 {
 	if (new_config.count == ALL)
-	{
-		configurations_.motor_config.setAllTouchConfigs(new_config.config);
-	} else
-	{
-		configurations_.motor_config.setTouchConfig(touchCountToIndex(new_config.count), new_config.config);
-	}
+		motor_config.setAllTouchConfigs(new_config.config);
+	else
+		motor_config.setTouchConfig(touchCountToIndex(new_config.count), new_config.config);
 }
 
 
@@ -351,6 +349,17 @@ std::function<void(float)> MotorTask::getSetTargetCallback() const
 		};
 		xQueueSend(motor_command_queue_, &command, portMAX_DELAY);
 	};
+}
+
+void MotorTask::setTarget(const float target) const
+{
+	const MotorCommand command = {
+		.type = MotorCommandType::SET_TARGET,
+		.data = {
+			.new_target = target,
+		}
+	};
+	xQueueSend(motor_command_queue_, &command, portMAX_DELAY);
 }
 
 std::function<void(uint8_t)> MotorTask::getUpdateTouchCountCallback()
